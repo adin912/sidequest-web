@@ -215,21 +215,8 @@ type UserQuest = {
 
 
 type Proof = {
-
-
-
-
-
-
-
   image_url: string;
-
-
-
-
-
-
-
+  status: 'pending' | 'approved' | 'rejected';
 };
 
 
