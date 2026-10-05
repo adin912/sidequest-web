@@ -70,6 +70,22 @@ export default function FriendsPage() {
       window.location.href = '/login';
       return;
     }
+      const { data: incomingRequests, error: requestsError } =
+    await supabase.rpc('get_friend_requests');
+
+  if (requestsError) {
+    console.error(requestsError);
+    setMessage(requestsError.message);
+    setFriendRequests([]);
+  } else {
+    setFriendRequests(
+      (incomingRequests ?? []).map((request) => ({
+        friendshipId: request.friendship_id,
+        userId: request.user_id,
+        username: request.username,
+      }))
+    );
+  }
 
     /*
      * 1. Nejdřív načteme samotná přátelství.
@@ -527,6 +543,47 @@ export default function FriendsPage() {
                 </div>
               </form>
             )}
+            {friendRequests.length > 0 && (
+  <div className="mb-6 rounded-2xl border border-violet-500/30 bg-violet-500/10 p-5">
+    <h2 className="mb-4 text-lg font-bold text-white">
+      Žádosti o přátelství
+    </h2>
+
+    <div className="space-y-3">
+      {friendRequests.map((request) => (
+        <div
+          key={request.friendshipId}
+          className="flex items-center justify-between gap-4 rounded-xl bg-slate-900/60 p-4"
+        >
+          <div>
+            <p className="font-semibold text-white">
+              {request.username ?? 'Neznámý uživatel'}
+            </p>
+            <p className="text-sm text-slate-400">
+              ti poslal žádost o přátelství
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => acceptFriendRequest(request.friendshipId)}
+              className="rounded-xl bg-green-600 px-4 py-2 font-semibold text-white transition hover:bg-green-500"
+            >
+              Přijmout
+            </button>
+
+            <button
+              onClick={() => rejectFriendRequest(request.friendshipId)}
+              className="rounded-xl bg-slate-700 px-4 py-2 font-semibold text-white transition hover:bg-slate-600"
+            >
+              Odmítnout
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
             {friends.length === 0 ? (
               <p className="text-sm text-[#987184]">
