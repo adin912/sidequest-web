@@ -78,13 +78,17 @@ export default function FriendsPage() {
     setMessage(requestsError.message);
     setFriendRequests([]);
   } else {
-    setFriendRequests(
-      (incomingRequests ?? []).map((request) => ({
-        friendshipId: request.friendship_id,
-        userId: request.user_id,
-        username: request.username,
-      }))
-    );
+   setFriendRequests(
+  (incomingRequests ?? []).map((request: {
+    friendship_id: string;
+    user_id: string;
+    username: string | null;
+  }) => ({
+    friendshipId: request.friendship_id,
+    userId: request.user_id,
+    username: request.username,
+  }))
+);
   }
 
     /*
